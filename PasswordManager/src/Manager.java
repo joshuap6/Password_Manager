@@ -7,29 +7,40 @@ public class Manager {
 	
 	public static void main(String[] args) {
 		myScan = new Scanner(System.in);
-		System.out.println("What would you like to do?");
-		System.out.println("[1] Store a new account");
-		System.out.println("[2] Retrieve an account");
-		System.out.println("[3] Exit program.");
+		intro();
 		int input = myScan.nextInt();
 		boolean isRunning = true;
-		while (isRunning == true) {
-			if (input == 1) {
-				
-			} else if (input == 2) {
-				System.out.println("Enter the name of the account:");
-				String inName = myScan.next();
-				Accounts inAccount = getAccount(inName);
-				if (inAccount == null) {
-					System.out.println("Sorry, that account was not found.");
-					System.out.println("Press enter to exit");
+		while (isRunning) {
+			boolean mainMenu = true;
+			int run = 0;
+			while (mainMenu) {
+				if (input == 1) {
+					
+				} else if (input == 2) {
+					while (run == 0) {
+						System.out.println("Enter the name of the account:");	
+						run++;
+					}
+					String inName = myScan.next();
+					if (inName.toLowerCase().equals("exit")) {
+						input = 0;
+						intro();
+						break;
+					}
+					Accounts inAccount = getAccount(inName);
+					if (inAccount == null) {
+						System.out.println("Sorry, that account was not found.");
+						System.out.println("Please enter a different name or type \"exit\" to exit");	
+					}
+				} else if (input > 3 || input < 1) {
+					System.out.println("Please input a valid integer");
+					input = myScan.nextInt();
+				} else {
+					isRunning = false;
+					break;
 				}
-			} else if (input > 3 || input < 1) {
-				System.out.println("Please input a valid integer");
-				input = myScan.nextInt();
-			} else {
-				isRunning = false;
 			}
+			
 		}
 		myScan.close();
 	}
@@ -44,5 +55,12 @@ public class Manager {
 			}
 		}
 		return null;
+	}
+	
+	private static void intro() {
+		System.out.println("What would you like to do?");
+		System.out.println("[1] Store a new account");
+		System.out.println("[2] Retrieve an account");
+		System.out.println("[3] Exit program.");
 	}
 }
