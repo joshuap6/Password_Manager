@@ -1,4 +1,5 @@
 
-public class Accounts {
+public class Accounts extends Manager {
+	
 
 }
