@@ -1,18 +1,17 @@
 
 public class Password extends Accounts {
 	
-	private static String password;
+	private String password;
 	
 	public Password() {
-		Password.create();
+		create();
 	}
-	public static String create() {
-        System.out.println("Create a Password (at least 8 characters");
+	public void create() {
+        System.out.println("Create a Password (at least 8 characters)");
         password = myScan.next();
-        return password;
 	}
 	
-	public static void strength(final String password) {
+	public void strength(final String password) {
         while (password.length() < 8) {
         	System.out.println("Password is Too Short. Please Try Again.");
         	create();
@@ -27,13 +26,17 @@ public class Password extends Accounts {
 	
 	private static boolean isVeryStrong(String password) {
 	    return password.matches("^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]");
-	  } private static boolean isStrong(String password) {
+	  } 
+	
+	private static boolean isStrong(String password) {
 	    return password.matches("^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z]");
-	  } private static boolean isMedium(String password) {
-	    return password.matches("^(?=.*[A-Z] || ?=.*[0-9])(?=.*[a-z]");
 	  }
 	
-	  public String getPassword() {
-		  return Password.password;
-	  }
+	private static boolean isMedium(String password) {
+	    return password.matches("^(?=.*[A-Z] || ?=.*[0-9])(?=.*[a-z]");
+	    }
+	
+	public String toString() {
+		return password;
+	}
 }
