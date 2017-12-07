@@ -1,26 +1,35 @@
 import java.util.Scanner;
 
 public class Manager {
+	/**
+	 * Scanner to be used throughout whole program.
+	 */
 	static Scanner myScan;
 	
+	/**
+	 * Empty list of accounts that will get eventually filled.
+	 */
 	static Accounts[] accountList = new Accounts[50];
+	
+	/**
+	 * Index of the next empty spot in the array.
+	 */
+	static int accountCount = 0;
 	
 	public static void main(String[] args) {
 		myScan = new Scanner(System.in);
-		boolean isRunning = true;
-		int accountCount = 0;
+		boolean isRunning = true; //Program is running
 		while (isRunning) {
-			int run = 0; //counter so intro String prints only once
-			intro(); //main menu intro
+			int run = 0; //counter so first String prints only once
+			intro(); //main menu
 			while (!myScan.hasNextInt()) { //make sure only integers are used
-				System.out.println("Please enter an integer.");
-				System.out.println();
+				System.out.println("Please enter an integer.\n");
 				intro();
 				myScan.next();
 			}
 			int input = myScan.nextInt();
 			while (true) {
-				if (input == 1) { //Input is 1
+				if (input == 1) { //Create a new account
 					Accounts newAcc = new Accounts();
 					System.out.println("Enter the name of the account: ");
 					String newName = myScan.next();
@@ -36,7 +45,7 @@ public class Manager {
 					Password newPass = new Password();
 					boolean passTest = true;
 					while (passTest) {
-						System.out.println("Would you like to keep your password? Y/N");
+						System.out.println("Would you like to keep your password? (Y/N)");
 						String keepPass = myScan.next();
 						while (true) {
 							if (keepPass.toUpperCase().equals("Y")) {
@@ -55,7 +64,11 @@ public class Manager {
 					accountList[accountCount] = newAcc;
 					accountCount++;
 					break;
-				} else if (input == 2) { //Input is 2
+				} else if (input == 2) { //Retrieve an account
+					if (accountList[0] == null) { //Check if accounts have been made, break if not
+						System.out.println("You have not make any accounts yet.\n");
+						break;
+					}
 					while (run == 0) {
 						System.out.println("Enter the name of the account:");
 						run++; //This line won't print again until this menu is exited and reentered
@@ -70,65 +83,144 @@ public class Manager {
 						System.out.println("Sorry, that account was not found.");
 						System.out.println("Please enter a different name or type \"exit\" to exit");
 					} else { //Account is found
-						System.out.println("The account name is: " + inAccount.getName());
-						System.out.println("The username is: " + inAccount.getUsername());
-						System.out.println("The passowrd is: " + inAccount.getPassword());
-						System.out.println();
+						System.out.println("Account Name: " + inAccount.getName());
+						System.out.println("Username: " + inAccount.getUsername());
+						System.out.println("Password: " + inAccount.getPassword() + "\n");
 						run = 0;
 						break;
 					}
-				} else if (input == 3) {
-					for (int i = 0; i < accountList.length; i++) {
-						if (accountList[i] == null) {
-							System.out.println();
-							break;
-						}
-						System.out.println("[" + (i + 1) + "] " + accountList[i].getName());
+				} else if (input == 3) { //List the accounts that have been created
+					listOfAccounts();
+					if (accountList[0] == null) { //Check if accounts have been made, break if not
+						System.out.println("You have not made any accounts yet.\n");
 					}
 					break;
-				} else if (input > 4 || input < 1) { //Input is not 1, 2, 3, or 4
+				} else if (input == 4) { //Delete one of the accounts from the list
+					if (accountList[0] == null) { //Check if accounts have been made, break if not
+						System.out.println("You have not make any accounts yet.\n");
+						break;
+					}
+					System.out.println("Pick from list of accounts or type \"0\" to exit:");
+					listOfAccounts();
+					int index = 0;
+					boolean gettingIndex = true; 
+					while (gettingIndex) { //Loop for making sure index is correct
+						while (!myScan.hasNextInt()) { //make sure only integers are used
+							System.out.println("Please enter an integer.\n");
+							intro();
+							myScan.next();
+						}
+						int newInput = myScan.nextInt();
+						while (true) {
+							if (newInput < 0 || newInput > accountCount) { //If input is higher than highest account # or is less than 0
+								System.out.println("That account doesn't exist.");
+								System.out.println("Enter a different number or type \"0\" to exit.");
+								break; //Break inner loop to get a new input
+							} else if (newInput == 0) {
+								index = -1; //Set index so it'll skip deletion
+								gettingIndex = false; //Break out of outer loop and go back to main menu
+								break; //Break inner loop completely
+							} else { //Valid input
+								index = newInput - 1; //Index of account starts at 0 instead of 1 so index is one less than input
+								gettingIndex = false; //Break out of outer loop and go back to main menu
+								break; //Break inner loop completely
+							}
+						}
+					}
+					if (index == -1) { //Go back to main menu
+						break;
+					}
+					deleteAccount(index);
+					System.out.println("Account #" + (index + 1) + " has been deleted.\n");
+					break;
+				} else if (input > 5 || input < 1) { //Input is not 1, 2, 3, 4, or 5
 					System.out.println("Please input a valid integer");
 					System.out.println();
-					break;
-					//input = myScan.nextInt();					
-				} else { //Input is 4
-					isRunning = false;
+					break;				
+				} else { //Input is 5
+					isRunning = false; //Exit program
 					break;
 				}
 			}			
 		}
-		myScan.close();
+		myScan.close(); //Close scanner
 	}
 
+	/**
+	 * Deletes an account at the index and moves rest of the array up to the index.<br>
+	 * Sets the account counter back one so the counter will be on the first empty spot in the array again.<br>
+	 * 
+	 * @param index Index on the account on the array to be deleted.
+	 */
+	private static void deleteAccount(int index) {
+		for (int i = index; i < accountList.length; i++) {
+			accountList[i] = accountList[i + 1];
+			if (accountList[i + 1] == null) {
+				accountCount = i;
+				break;
+			}
+		}
+		
+	}
+
+	/**
+	 * Prints out the list of accounts that have been created so far.
+	 */
+	private static void listOfAccounts() {
+		for (int i = 0; i < accountList.length; i++) { //Goes through the list of accounts
+			if (accountList[i] == null) { //If the account is null, that's the end of the list of accounts
+				System.out.println();
+				return;
+			}
+			System.out.println("[" + (i + 1) + "] " + accountList[i].getName()); //Prints account # and name of the account
+		}
+	}
+
+	/**
+	 * Checks if the name of the account isn't already being used.
+	 * 
+	 * @param newName Name of the account that is being created.
+	 * @return true if the name is unique, false if the name exists.
+	 */
 	private static boolean validName(String newName) {
 		for (int i = 0; i < accountList.length; i++) {
-			if (accountList[i] == null) {
+			if (accountList[i] == null) { //There is no account that has been created that has the same name.
 				return true;
 			}
-			if (accountList[i].getName().toLowerCase().equals(newName.toLowerCase())) {
+			if (accountList[i].getName().toLowerCase().equals(newName.toLowerCase())) { //Check if the names match (case-sensitive)
 				return false;
 			}
 		}
 		return true;
 	}
 
+	/**
+	 * Goes through the array and searches for the specified account.
+	 * 
+	 * @param accountName Name of the account that is being searched.
+	 * @return the account if it exists, null if the account does not exist.
+	 */
 	public static Accounts getAccount(String accountName) {
 		for (int i = 0; i < accountList.length; i++) {
-			if (accountList[i] == null) {
+			if (accountList[i] == null) { //There is no account that has been created that has the same name
 				return null;
 			}
-			if (accountList[i].getName().toLowerCase().equals(accountName.toLowerCase())) {
+			if (accountList[i].getName().toLowerCase().equals(accountName.toLowerCase())) { //Check if the account names match (case-sensitive)
 				return accountList[i];
 			}
 		}
 		return null;
 	}
 	
+	/**
+	 * Prints out the main menu of options.
+	 */
 	private static void intro() {
 		System.out.println("What would you like to do?");
 		System.out.println("[1] Store a new account");
 		System.out.println("[2] Retrieve an account");
 		System.out.println("[3] Show list of accounts");
-		System.out.println("[4] Exit program.");
+		System.out.println("[4] Delete an account");
+		System.out.println("[5] Exit program");
 	}
 }
