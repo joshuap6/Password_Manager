@@ -7,7 +7,8 @@ public class Password extends Accounts {
 	private String password;
 	
 	/**
-	 * Creates a password from user input.
+	 * Creates a password from user input.<br>
+	 * Makes sure the password is long enough and checks for its strenth as well.
 	 */
 	public Password() {
 		create();
@@ -16,7 +17,7 @@ public class Password extends Accounts {
 	/**
 	 * Creates the password.
 	 */
-	public void create() {
+	private void create() {
         System.out.println("Create a Password (at least 8 characters)");
         password = myScan.next();
         strength(password);
@@ -34,7 +35,7 @@ public class Password extends Accounts {
 	 * 
 	 * @param password The string that is trying to become the password.
 	 */
-	public void strength(final String password) {
+	private void strength(final String password) {
         if (password.length() < 8) { //Checks if the password is at least 8 characters long
         	System.out.println("Password is Too Short. Please Try Again.");
         	create(); //Indirect recursive call to get another input from the user.

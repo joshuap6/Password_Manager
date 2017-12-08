@@ -4,17 +4,17 @@ public class Manager {
 	/**
 	 * Scanner to be used throughout whole program.
 	 */
-	static Scanner myScan;
+	protected static Scanner myScan;
 	
 	/**
 	 * Empty list of accounts that will get eventually filled.
 	 */
-	static Accounts[] accountList = new Accounts[50];
+	private static Accounts[] accountList = new Accounts[50];
 	
 	/**
 	 * Index of the next empty spot in the array.
 	 */
-	static int accountCount = 0;
+	private static int accountCount = 0;
 	
 	public static void main(String[] args) {
 		myScan = new Scanner(System.in);
@@ -154,9 +154,9 @@ public class Manager {
 	 */
 	private static void deleteAccount(int index) {
 		for (int i = index; i < accountList.length; i++) {
-			accountList[i] = accountList[i + 1];
-			if (accountList[i + 1] == null) {
-				accountCount = i;
+			accountList[i] = accountList[i + 1]; //Either moves the accounts up the list to cover up the account at the index or points it to a null
+			if (accountList[i + 1] == null) { //End of list of accounts
+				accountCount = i; //Resets counter to point to next empty spot on array
 				break;
 			}
 		}
