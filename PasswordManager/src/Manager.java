@@ -20,7 +20,7 @@ public class Manager {
 		myScan = new Scanner(System.in);
 		boolean isRunning = true; //Program is running
 		while (isRunning) {
-			int run = 0; //counter so first String prints only once
+			boolean firstLinePrinted = false; //first String prints only once
 			intro(); //main menu
 			while (!myScan.hasNextInt()) { //make sure only integers are used
 				System.out.println("Please enter an integer.\n");
@@ -69,13 +69,13 @@ public class Manager {
 						System.out.println("You have not make any accounts yet.\n");
 						break;
 					}
-					while (run == 0) {
+					while (!firstLinePrinted) {
 						System.out.println("Enter the name of the account:");
-						run++; //This line won't print again until this menu is exited and reentered
+						firstLinePrinted = true; //This line won't print again until this menu is exited and reentered
 					}
 					String inName = myScan.next(); //Get name of account
 					if (inName.toLowerCase().equals("exit")) {//Exit from this menu
-						run = 0; //Reset counter so first line can be printed again
+						firstLinePrinted = false; //Reset flag so first line can be printed again
 						break;
 					}
 					Accounts inAccount = getAccount(inName); //Searches for account using account name
@@ -86,7 +86,7 @@ public class Manager {
 						System.out.println("Account Name: " + inAccount.getName());
 						System.out.println("Username: " + inAccount.getUsername());
 						System.out.println("Password: " + inAccount.getPassword() + "\n");
-						run = 0;
+						firstLinePrinted = false; //Reset flag
 						break;
 					}
 				} else if (input == 3) { //List the accounts that have been created
