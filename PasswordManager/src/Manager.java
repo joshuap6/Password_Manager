@@ -107,7 +107,6 @@ public class Manager {
 					while (gettingIndex) { //Loop for making sure index is correct
 						while (!myScan.hasNextInt()) { //make sure only integers are used
 							System.out.println("Please enter an integer.\n");
-							intro();
 							myScan.next();
 						}
 						int newInput = myScan.nextInt();
@@ -177,12 +176,16 @@ public class Manager {
 	}
 
 	/**
-	 * Checks if the name of the account isn't already being used.
+	 * Checks if the name of the account isn't already being used. <br>
+	 * Also makes sure the input isn't empty.
 	 * 
 	 * @param newName Name of the account that is being created.
 	 * @return true if the name is unique, false if the name exists.
 	 */
 	private static boolean validName(String newName) {
+		if (newName.length() == 0) {
+			return false;
+		}
 		for (int i = 0; i < accountList.length; i++) {
 			if (accountList[i] == null) { //There is no account that has been created that has the same name.
 				return true;
